@@ -5,6 +5,7 @@ import { SharedBaseLibModule } from '@shared-base-lib';
 import { LoggerModule } from 'nestjs-pino';
 import CommandHandlers from './commands';
 import { MappingProfiles } from './helpers';
+import QueryHandlers from './queries';
 import { UsersController } from './users.controller';
 
 @Module({
@@ -16,7 +17,7 @@ import { UsersController } from './users.controller';
     LoggerModule.forRoot(),
   ],
   controllers: [UsersController],
-  providers: [...MappingProfiles, ...CommandHandlers],
-  exports: [...MappingProfiles, ...CommandHandlers],
+  providers: [...MappingProfiles, ...CommandHandlers, ...QueryHandlers],
+  exports: [...MappingProfiles, ...CommandHandlers, ...QueryHandlers],
 })
 export class UsersModule {}

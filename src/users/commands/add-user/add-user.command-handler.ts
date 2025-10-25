@@ -14,7 +14,7 @@ export class AddUserCommandHandler
     this.logger.info(
       `Executing command ${AddUserCommand.name} for Email : ${command.email}`,
     );
-    const abc = await new Promise((res, rej) => {
+    const abc = await new Promise((res) => {
       setTimeout(() => {
         res('success');
       }, 1000);
