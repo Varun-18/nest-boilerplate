@@ -1,10 +1,10 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { Logger } from 'nestjs-pino';
-import { swaggerConfig } from './configs';
 import { SwaggerModule } from '@nestjs/swagger';
-import { GlobalExceptionsFilter } from './libs';
+import { GlobalExceptionsFilter } from '@shared-base-lib';
 import { configDotenv } from 'dotenv';
+import { Logger } from 'nestjs-pino';
+import { AppModule } from './app.module';
+import { swaggerConfig } from './configs';
 
 async function bootstrap() {
   configDotenv();

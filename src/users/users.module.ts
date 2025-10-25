@@ -1,7 +1,9 @@
 import { classes } from '@automapper/classes';
 import { AutomapperModule } from '@automapper/nestjs';
 import { Module } from '@nestjs/common';
-import { SharedBaseLibModule } from 'src/libs';
+import { SharedBaseLibModule } from '@shared-base-lib';
+import { LoggerModule } from 'nestjs-pino';
+import CommandHandlers from './commands';
 import { MappingProfiles } from './helpers';
 import { UsersController } from './users.controller';
 
@@ -11,9 +13,10 @@ import { UsersController } from './users.controller';
     AutomapperModule.forRoot({
       strategyInitializer: classes(),
     }),
+    LoggerModule.forRoot(),
   ],
   controllers: [UsersController],
-  providers: [...MappingProfiles],
-  exports: [...MappingProfiles],
+  providers: [...MappingProfiles, ...CommandHandlers],
+  exports: [...MappingProfiles, ...CommandHandlers],
 })
 export class UsersModule {}

@@ -1,13 +1,18 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Post } from '@nestjs/common';
+import { CqrsMediator } from '@shared-base-lib';
 import { User } from './domain';
 import { AddUserRequest } from './models';
+import { AddUserCommand } from './commands';
 
 @Controller('users')
 export class UsersController {
   private users: User[];
-  constructor(@InjectMapper() protected readonly mapper: Mapper) {
+  constructor(
+    @InjectMapper() protected readonly mapper: Mapper,
+    @Inject() protected readonly mediator: CqrsMediator,
+  ) {
     this.users = [
       {
         email: 'varun@admin.com',
@@ -21,9 +26,9 @@ export class UsersController {
   }
 
   @Post()
-  public addUser(@Body() model: AddUserRequest): User {
-    const user = this.mapper.map(model, AddUserRequest, User);
-    console.log('🚀 ~ UsersController ~ addUser ~ user:', user);
-    return user;
+  public async addUser(@Body() model: AddUserRequest): Promise<string> {
+    const command = this.mapper.map(model, AddUserRequest, AddUserCommand);
+    const res = await this.mediator.execute<AddUserCommand, string>(command);
+    return res;
   }
 }

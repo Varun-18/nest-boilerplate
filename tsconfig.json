@@ -19,6 +19,12 @@
     "forceConsistentCasingInFileNames": true,
     "noImplicitAny": false,
     "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
-  }
+    "noFallthroughCasesInSwitch": false,
+    "paths": {
+      "@shared-base-lib" : ["libs/shared-base-lib"],
+      "@shared-base-lib/*" : ["libs/shared-base-lib/*"]
+    }
+  },
+  "include": ["src/**/*", "libs/**/*"],
+  "exclude": ["node_modules", "dist"]
 }
