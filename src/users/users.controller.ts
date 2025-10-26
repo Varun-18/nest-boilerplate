@@ -10,36 +10,24 @@ import { ApiOperation } from '@nestjs/swagger';
 
 @Controller('users')
 export class UsersController {
-  private users: User[];
   constructor(
     @InjectMapper() protected readonly mapper: Mapper,
     @Inject() protected readonly mediator: CqrsMediator,
-  ) {
-    this.users = [
-      {
-        email: 'varun@admin.com',
-      },
-    ];
-  }
+  ) {}
 
-  @Get()
-  public listUsers(): User[] {
-    return this.users;
-  }
-
-  @ApiOperation({ description: 'Get User By Email Id' })
-  @Get(':email')
-  public async getUserByEmail(
-    @Param() param: GetUserByEmailRequest,
-  ): Promise<User> {
-    const query = this.mapper.map(
-      param,
-      GetUserByEmailRequest,
-      GetUserByEmailQuery,
-    );
-    const user = await this.mediator.execute<GetUserByEmailQuery, User>(query);
-    return user;
-  }
+  // @ApiOperation({ description: 'Get User By Email Id' })
+  // @Get(':email')
+  // public async getUserByEmail(
+  //   @Param() param: GetUserByEmailRequest,
+  // ): Promise<User> {
+  //   const query = this.mapper.map(
+  //     param,
+  //     GetUserByEmailRequest,
+  //     GetUserByEmailQuery,
+  //   );
+  //   const user = await this.mediator.execute<GetUserByEmailQuery, User>(query);
+  //   return user;
+  // }
 
   @ApiOperation({ description: 'Add New User' })
   @Post()

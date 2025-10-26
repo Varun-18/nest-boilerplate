@@ -1,11 +1,9 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class Migration1761495543298 implements MigrationInterface {
-  name = 'Migration1761495543298';
+export class Migration1761496205512 implements MigrationInterface {
+  name = 'Migration1761496205512';
 
   public async up(queryRunner: QueryRunner): Promise<void> {
-    // manually entered for new schema creation
-    await queryRunner.query(`CREATE SCHEMA IF NOT EXISTS core`);
     await queryRunner.query(
       `CREATE TYPE "core"."users_role_enum" AS ENUM('ADMIN', 'END_USER')`,
     );
@@ -17,6 +15,5 @@ export class Migration1761495543298 implements MigrationInterface {
   public async down(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`DROP TABLE "core"."users"`);
     await queryRunner.query(`DROP TYPE "core"."users_role_enum"`);
-    await queryRunner.query(`DROP SCHEMA IF EXISTS core CASCADE`);
   }
 }

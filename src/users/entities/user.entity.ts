@@ -1,6 +1,6 @@
 import { Column, Entity } from 'typeorm';
 import { BaseEntity } from '@shared-base-lib';
-import { UserRole } from '../domain';
+import { EUserRole } from '../domain';
 
 @Entity({ name: 'users', schema: 'core' })
 export class User extends BaseEntity {
@@ -16,6 +16,6 @@ export class User extends BaseEntity {
   @Column({ default: true })
   isActive: boolean;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.END_USER })
-  role: UserRole;
+  @Column({ type: 'enum', enum: EUserRole, default: EUserRole.END_USER })
+  role: EUserRole;
 }
