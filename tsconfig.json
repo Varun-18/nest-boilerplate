@@ -22,9 +22,11 @@
     "noFallthroughCasesInSwitch": false,
     "paths": {
       "@shared-base-lib" : ["libs/shared-base-lib"],
-      "@shared-base-lib/*" : ["libs/shared-base-lib/*"]
+      "@shared-base-lib/*" : ["libs/shared-base-lib/*"],
+      "@configs" : ["src/configs"],
+      "@configs/*" : ["src/configs/*"]
     }
   },
-  "include": ["src/**/*", "libs/**/*"],
+  "include": ["src/**/*", "libs/**/*","./ormconfig.ts"],
   "exclude": ["node_modules", "dist"]
 }
