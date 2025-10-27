@@ -1,12 +1,10 @@
 import { Mapper } from '@automapper/core';
 import { InjectMapper } from '@automapper/nestjs';
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
-import { CqrsMediator } from '@shared-base-lib';
-import { User } from './domain';
-import { AddUserRequest, GetUserByEmailRequest } from './models';
-import { AddUserCommand } from './commands';
-import { GetUserByEmailQuery } from './queries';
+import { Body, Controller, Inject, Post } from '@nestjs/common';
 import { ApiOperation } from '@nestjs/swagger';
+import { CqrsMediator } from '@shared-base-lib';
+import { AddUserCommand } from './commands';
+import { AddUserRequest } from './models';
 
 @Controller('users')
 export class UsersController {

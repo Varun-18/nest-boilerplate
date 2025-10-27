@@ -19,7 +19,7 @@ export class GetUserByEmailQueryHandler
 
     const abc = await new Promise<User>((res) => {
       setTimeout(() => {
-        res(new User(query.email));
+        // res(new User(query.email));
       }, 1000);
     });
     return abc;

@@ -23,6 +23,8 @@
     "paths": {
       "@shared-base-lib" : ["libs/shared-base-lib"],
       "@shared-base-lib/*" : ["libs/shared-base-lib/*"],
+      "@shared-utils-lib" : ["libs/shared-utils-lib"],
+      "@shared-utils-lib/*" : ["libs/shared-utils-lib/*"],
       "@configs" : ["src/configs"],
       "@configs/*" : ["src/configs/*"]
     }

@@ -3,7 +3,7 @@ import { BaseEntity } from '@shared-base-lib';
 import { EUserRole } from '../domain';
 
 @Entity({ name: 'users', schema: 'core' })
-export class User extends BaseEntity {
+export class UserEntity extends BaseEntity {
   @Column({ unique: true })
   email: string;
 

@@ -1,3 +1,4 @@
+import { ProfileMapper } from './profile.mapper';
 import { UserMapper } from './users.mapper';
 
-export const MappingProfiles = [UserMapper];
+export const MappingProfiles = [ProfileMapper, UserMapper];
