@@ -25,8 +25,6 @@ export class AddUserCommandHandler
     );
 
     const user = this.mapper.map(command, AddUserCommand, User);
-    // const userEntity = this.mapper.map(user, User, UserEntity);
-    console.log('🚀 ~ AddUserCommandHandler ~ execute ~ this.repo:', this.repo);
     const response = await this.repo.createAsync(user);
 
     return response;
