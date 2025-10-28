@@ -1,5 +1,4 @@
-import { IConstructor } from './i-constructor';
-import { fromJson, toJson } from './json-convert';
+import { toJson } from './json-convert';
 
 const encodeBuffer = (buffer: Buffer): string => {
   return buffer.toString('base64');

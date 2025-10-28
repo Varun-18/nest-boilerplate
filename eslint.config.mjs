@@ -34,6 +34,7 @@ export default tseslint.config(
       '@typescript-eslint/no-unsafe-assignment': "off",
       '@typescript-eslint/no-wrapper-object-types': "off",
       '@typescript-eslint/no-redundant-type-constituents': "off",
+      '@typescript-eslint/no-empty-object-type': "off",
       "prettier/prettier": ["error", { endOfLine: "auto" }],
     },
   },

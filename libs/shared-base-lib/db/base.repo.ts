@@ -1,44 +1,87 @@
-import { Repository } from 'typeorm';
-import { BaseReadOnlyRepository } from './base-read-only.repo';
+import { Mapper } from '@automapper/core';
+import { DatabaseException } from '@shared-base-lib';
+import { PinoLogger } from 'nestjs-pino';
+import { ObjectLiteral, Repository } from 'typeorm';
+import { BaseReadOnlyRepo } from './base-read-only.repo';
 import { IBaseRepo } from './i-base.repo';
 
-export abstract class BaseRepository<T extends { id: TKey }, TKey = string>
-  extends BaseReadOnlyRepository<T, TKey>
-  implements IBaseRepo<T, TKey>
+export interface IRepositoryOptions {
+  autoUpdatedAt?: boolean;
+  softDelete?: boolean;
+}
+
+export abstract class BaseRepo<
+    TEntity extends ObjectLiteral,
+    TModel,
+    TKey = string,
+  >
+  extends BaseReadOnlyRepo<TEntity, TModel, TKey>
+  implements IBaseRepo<TModel, TKey>
 {
-  constructor(protected readonly repository: Repository<T>) {
-    super(repository);
+  protected autoUpdatedAtEnabled: boolean = true;
+  protected softDeleteEnabled: boolean = true;
+
+  constructor(
+    protected readonly repo: Repository<TEntity>,
+    protected readonly mapper: Mapper,
+    protected readonly logger: PinoLogger,
+    protected readonly entityClass: new () => TEntity,
+    protected readonly modelClass: new () => TModel,
+    options?: IRepositoryOptions,
+  ) {
+    super(repo, mapper, logger, entityClass, modelClass);
+
+    if (options?.autoUpdatedAt !== undefined) {
+      this.autoUpdatedAtEnabled = options.autoUpdatedAt;
+    }
+    if (options?.softDelete !== undefined) {
+      this.softDeleteEnabled = options.softDelete;
+    }
   }
 
-  async createAsync(entry: T): Promise<T> {
-    const created = this.repository.create(entry);
-    return this.repository.save(created);
+  async createAsync(entry: TModel): Promise<TModel> {
+    try {
+      const entity = this.mapper.map(entry, this.modelClass, this.entityClass);
+      const saved = await this.repo.save(entity);
+      return this.mapper.map(saved, this.entityClass, this.modelClass);
+    } catch (ex) {
+      this.logger.error(ex);
+      throw new DatabaseException(ex);
+    }
   }
 
-  async updateAsync(entry: T): Promise<T> {
-    return this.repository.save(entry);
+  async updateAsync(entry: TModel): Promise<TModel> {
+    try {
+      const entity = this.mapper.map(entry, this.modelClass, this.entityClass);
+
+      // Auto-update updatedAt field if enabled
+      if (this.autoUpdatedAtEnabled && 'updatedAt' in entity) {
+        (entity as any).updatedAt = new Date();
+      }
+
+      const saved = await this.repo.save(entity);
+      return this.mapper.map(saved, this.entityClass, this.modelClass);
+    } catch (ex) {
+      this.logger.error(ex);
+      throw new DatabaseException(ex);
+    }
   }
 
   async deleteAsync(pk: TKey, force: boolean = false): Promise<boolean> {
-    const pkField = this.getPrimaryKeyField();
+    try {
+      const key =
+        typeof pk === 'object' ? { ...pk } : { [this.idColumnName]: pk };
 
-    if (force) {
-      const result = await this.repository.delete({ [pkField]: pk } as any);
-      return (result.affected ?? 0) > 0;
-    }
+      if (this.softDeleteEnabled && !force) {
+        await this.repo.softDelete(key as any);
+      } else {
+        await this.repo.delete(key as any);
+      }
 
-    // Soft delete if entity has deletedAt field
-    const entity = await this.getAsync(pk);
-    if (!entity) {
-      return false;
-    }
-
-    if ('deletedAt' in entity) {
-      await this.repository.softDelete({ [pkField]: pk } as any);
       return true;
+    } catch (ex) {
+      this.logger.error(ex);
+      throw new DatabaseException(ex);
     }
-
-    const result = await this.repository.delete({ [pkField]: pk } as any);
-    return (result.affected ?? 0) > 0;
   }
 }

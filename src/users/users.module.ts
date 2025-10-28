@@ -7,6 +7,7 @@ import { LoggerModule } from 'nestjs-pino';
 import CommandHandlers from './commands';
 import Entities from './entities';
 import { MappingProfiles } from './helpers';
+import { USER_REPO } from './providers';
 import QueryHandlers from './queries';
 import { UserRepository } from './repo';
 import { UsersController } from './users.controller';
@@ -25,13 +26,16 @@ import { UsersController } from './users.controller';
     ...MappingProfiles,
     ...CommandHandlers,
     ...QueryHandlers,
-    UserRepository,
+    {
+      provide: USER_REPO,
+      useClass: UserRepository,
+    },
   ],
   exports: [
     ...MappingProfiles,
     ...CommandHandlers,
     ...QueryHandlers,
-    UserRepository,
+    USER_REPO,
   ],
 })
 export class UsersModule {}

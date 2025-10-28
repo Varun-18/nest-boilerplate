@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { IConstructor } from './i-constructor';
 
 export const fromJson = <T extends {}>(

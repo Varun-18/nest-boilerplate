@@ -1,22 +1,22 @@
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
+import { Inject } from '@nestjs/common';
 import { CommandHandler, ICommandHandler } from '@nestjs/cqrs';
 import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
-import { USER_REPO, UserRepository } from '../../repo';
+import { User } from '../../domain';
+import { IUserRepo, USER_REPO } from '../../providers';
 import { AddUserCommand } from './add-user.command';
-import { InjectMapper } from '@automapper/nestjs';
-import { Mapper } from '@automapper/core';
-import { User } from 'src/users/domain';
-import { UserEntity } from 'src/users/entities';
-import { Inject } from '@nestjs/common';
 
 @CommandHandler(AddUserCommand)
 export class AddUserCommandHandler
   implements ICommandHandler<AddUserCommand, unknown>
 {
   constructor(
-    @InjectPinoLogger(AddUserCommand.name)
     @Inject(USER_REPO)
-    protected readonly repo: UserRepository,
-    @InjectMapper() protected readonly mapper: Mapper,
+    protected readonly repo: IUserRepo,
+    @InjectMapper()
+    protected readonly mapper: Mapper,
+    @InjectPinoLogger(AddUserCommand.name)
     protected readonly logger: PinoLogger,
   ) {}
   public async execute(command: AddUserCommand): Promise<unknown> {
@@ -25,13 +25,9 @@ export class AddUserCommandHandler
     );
 
     const user = this.mapper.map(command, AddUserCommand, User);
-    console.log('🚀 ~ AddUserCommandHandler ~ execute ~ user:', user);
-    const userEntity = this.mapper.map(user, User, UserEntity);
-    console.log(
-      '🚀 ~ AddUserCommandHandler ~ execute ~ userEntity:',
-      userEntity,
-    );
-    const response = await this.repo.createAsync(userEntity);
+    // const userEntity = this.mapper.map(user, User, UserEntity);
+    console.log('🚀 ~ AddUserCommandHandler ~ execute ~ this.repo:', this.repo);
+    const response = await this.repo.createAsync(user);
 
     return response;
   }

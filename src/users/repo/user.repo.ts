@@ -1,26 +1,43 @@
+import { Mapper } from '@automapper/core';
+import { InjectMapper } from '@automapper/nestjs';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { BaseRepo, DatabaseException } from '@shared-base-lib';
+import { InjectPinoLogger, PinoLogger } from 'nestjs-pino';
 import { Repository } from 'typeorm';
-import { BaseRepository } from '@shared-base-lib';
+import { User } from '../domain';
 import { UserEntity } from '../entities';
-
-export const USER_REPO = 'USER_REPO';
+import { IUserRepo } from '../providers';
+import { isNilOrEmpty } from '@shared-utils-lib';
 
 @Injectable()
-export class UserRepository extends BaseRepository<UserEntity, string> {
+export class UserRepository
+  extends BaseRepo<UserEntity, User, string>
+  implements IUserRepo
+{
   constructor(
     @InjectRepository(UserEntity)
-    repo: Repository<UserEntity>,
+    protected readonly repo: Repository<UserEntity>,
+    @InjectMapper()
+    protected readonly mapper: Mapper,
+    @InjectPinoLogger(UserRepository.name)
+    protected readonly logger: PinoLogger,
   ) {
-    super(repo);
+    super(repo, mapper, logger, UserEntity, User);
   }
 
-  protected getPrimaryKeyField(): keyof UserEntity {
-    return 'id';
-  }
+  public async getUserByEmail(email: string): Promise<User> {
+    try {
+      const user = await this.repo.findOneBy({ email });
 
-  // Add custom methods here
-  async findByEmail(email: string): Promise<UserEntity | null> {
-    return this.repository.findOne({ where: { email } });
+      if (isNilOrEmpty(user)) {
+        throw new DatabaseException(`User with email : ${email} not found`);
+      }
+
+      return this.mapper.map(user, UserEntity, User);
+    } catch (ex) {
+      this.logger.error(ex);
+      throw new DatabaseException(ex);
+    }
   }
 }

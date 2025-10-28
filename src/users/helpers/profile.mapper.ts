@@ -17,5 +17,6 @@ export class ProfileMapper extends AutomapperProfile {
 
   private add(mapper: Mapper): void {
     createMap(mapper, User, UserEntity);
+    createMap(mapper, UserEntity, User);
   }
 }

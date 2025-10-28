@@ -1,3 +1,5 @@
+/* eslint-disable */
+
 import { camelCase, Options, pascalCase, snakeCase } from 'change-case';
 import { keys, isPlainObject, isArray, map } from 'lodash';
 

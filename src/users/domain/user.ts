@@ -3,6 +3,18 @@ import { EUserRole } from './enums';
 
 export class User {
   @AutoMap()
+  public id: string;
+
+  @AutoMap()
+  public createdAt: string;
+
+  @AutoMap()
+  public updatedAt: string;
+
+  @AutoMap()
+  public deletedAt: string;
+
+  @AutoMap()
   public name: string;
 
   @AutoMap()
@@ -16,18 +28,4 @@ export class User {
 
   @AutoMap()
   public isActive: boolean;
-
-  constructor(
-    name: string,
-    email: string,
-    password: string,
-    role: EUserRole,
-    isActive: boolean,
-  ) {
-    this.name = name;
-    this.email = email;
-    this.password = password;
-    this.role = role;
-    this.isActive = isActive;
-  }
 }

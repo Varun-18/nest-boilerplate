@@ -29,14 +29,14 @@ export const getDistanceFromLatLonInMeters = (
   const dLat = deg2rad(lat2 - lat1); // deg2rad below
   const dLon = deg2rad(lon2 - lon1);
   // Just a formula so shut up eslint :)
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+
   const a =
     Math.sin(dLat / 2) * Math.sin(dLat / 2) +
     Math.cos(deg2rad(lat1)) *
       Math.cos(deg2rad(lat2)) *
       Math.sin(dLon / 2) *
       Math.sin(dLon / 2);
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   const d = R * c; // Distance in km
   const result = toMeters(d);
@@ -45,12 +45,12 @@ export const getDistanceFromLatLonInMeters = (
 
 export const deg2rad = (deg: number): number => {
   // Just a formula so shut up eslint :)
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+
   return deg * (Math.PI / 180);
 };
 
 export const toMeters = (km: number): number => {
   // Just a formula so shut up eslint :)
-  // eslint-disable-next-line @typescript-eslint/no-magic-numbers
+
   return km * 1000;
 };
